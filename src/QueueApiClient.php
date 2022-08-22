@@ -70,12 +70,19 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param int|null $cityId
      * @return \yii\httpclient\Message|Request
      * @throws InvalidConfigException
      */
-    public function getCitiesListRequest()
+    public function getCitiesListRequest(int $cityId = null)
     {
-        return $this->prepareRequest($this->urls->stevedoreUnloads->citiesList);
+        $queryParams = [];
+
+        if (!is_null($cityId)) {
+            $queryParams['city_id'] = $cityId;
+        }
+
+        return $this->prepareRequest($this->urls->stevedoreUnloads->citiesList, $queryParams);
     }
 
     /**
