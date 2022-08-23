@@ -2,6 +2,7 @@
 
 namespace Brezgalov\QueueApiClient;
 
+use Brezgalov\QueueApiClient\Urls\Cultures;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
 use yii\base\Component;
 
@@ -17,6 +18,11 @@ class Urls extends Component
     public $stevedoreUnloads;
 
     /**
+     * @var Cultures
+     */
+    public $cultures;
+
+    /**
      * Urls constructor.
      * @param array $config
      */
@@ -26,6 +32,10 @@ class Urls extends Component
 
         if (empty($this->stevedoreUnloads)) {
             $this->stevedoreUnloads = \Yii::createObject(StevedoreUnloads::class);
+        }
+
+        if (empty($this->cultures)) {
+            $this->cultures = \Yii::createObject(Cultures::class);
         }
     }
 }

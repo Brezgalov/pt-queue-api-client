@@ -86,6 +86,18 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param int $unloadId
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getCulturesListRequest(int $unloadId)
+    {
+        return $this->prepareRequest($this->urls->cultures->culturesList, [
+            'unload_id' => $unloadId,
+        ]);
+    }
+
+    /**
      * @param string $route
      * @param array $queryParams
      * @param bool $useAppEnv
