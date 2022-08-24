@@ -8,6 +8,8 @@ use yii\base\Component;
  * Class StevedoreUnloads
  * @package Brezgalov\QueueApiClient\Urls
  *
+ * @property-read string $list
+ * @property-read string $single
  * @property-read string $citiesList
  */
 class StevedoreUnloads extends Component
@@ -25,7 +27,7 @@ class StevedoreUnloads extends Component
      */
     public function getSingle()
     {
-        return 'stevedore-unloads/index';
+        return 'stevedore-unloads/view';
     }
 
     /**

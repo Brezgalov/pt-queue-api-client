@@ -3,6 +3,7 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
+use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Request;
 
@@ -67,6 +68,21 @@ class QueueApiClient extends BaseApiClient
         $this->token = $value;
 
         return $this;
+    }
+
+    /**
+     * @param int $unloadId
+     * @return StevedoreUnload
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    public function getStevedoreUnload(int $unloadId)
+    {
+        $request = $this->prepareRequest($this->urls->stevedoreUnloads->single, [
+            'id' => $unloadId,
+        ]);
+
+        return new StevedoreUnload($request, $request->send());
     }
 
     /**
