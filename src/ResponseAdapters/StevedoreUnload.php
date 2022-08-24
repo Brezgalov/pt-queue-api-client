@@ -29,6 +29,14 @@ class StevedoreUnload extends BaseResponseAdapter implements IStevedoreUnloadDto
     {
         return $this->responseData['slug'] ?? null;
     }
+
+    /**
+     * @return bool
+     */
+    public function getIsStep()
+    {
+        return $this->getSlug() === 'step';
+    }
     
     /**
      * @return string|null
