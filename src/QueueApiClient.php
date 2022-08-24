@@ -86,11 +86,11 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
-     * @param int $unloadId
+     * @param int|null $unloadId
      * @return \yii\httpclient\Message|Request
      * @throws InvalidConfigException
      */
-    public function getCulturesListRequest(int $unloadId)
+    public function getCulturesListRequest(int $unloadId = null)
     {
         return $this->prepareRequest($this->urls->cultures->culturesList, [
             'unload_id' => $unloadId,
