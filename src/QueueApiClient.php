@@ -108,9 +108,27 @@ class QueueApiClient extends BaseApiClient
      */
     public function getCulturesListRequest(int $unloadId = null)
     {
-        return $this->prepareRequest($this->urls->cultures->culturesList, [
+        return $this->prepareRequest($this->urls->cultures->list, [
             'unload_id' => $unloadId,
         ]);
+    }
+
+    /**
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getTruckTypesListRequest()
+    {
+        return $this->prepareRequest($this->urls->truckTypes->list);
+    }
+
+    /**
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getExportersList()
+    {
+        return $this->prepareRequest($this->urls->exporters->list);
     }
 
     /**

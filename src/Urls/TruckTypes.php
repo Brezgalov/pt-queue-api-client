@@ -5,18 +5,18 @@ namespace Brezgalov\QueueApiClient\Urls;
 use yii\base\Component;
 
 /**
- * Class Cultures
+ * Class TruckTypes
  * @package Brezgalov\QueueApiClient\Urls
  *
  * @property-read string $list
  */
-class Cultures extends Component
+class TruckTypes extends Component
 {
     /**
      * @return string
      */
     public function getList()
     {
-        return 'cultures/index';
+        return 'truck-types/list';
     }
 }
