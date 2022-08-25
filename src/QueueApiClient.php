@@ -126,9 +126,18 @@ class QueueApiClient extends BaseApiClient
      * @return \yii\httpclient\Message|Request
      * @throws InvalidConfigException
      */
-    public function getExportersList()
+    public function getExportersListRequest()
     {
         return $this->prepareRequest($this->urls->exporters->list);
+    }
+
+    /**
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getStepGrainOwnersListRequest()
+    {
+        return $this->prepareRequest($this->urls->stepGrainOwners->list);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\QueueApiClient\Urls\Cultures;
 use Brezgalov\QueueApiClient\Urls\Exporters;
+use Brezgalov\QueueApiClient\Urls\StepGrainOwners;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
 use Brezgalov\QueueApiClient\Urls\TruckTypes;
 use yii\base\Component;
@@ -35,6 +36,11 @@ class Urls extends Component
     public $exporters;
 
     /**
+     * @var StepGrainOwners
+     */
+    public $stepGrainOwners;
+
+    /**
      * Urls constructor.
      * @param array $config
      */
@@ -56,6 +62,10 @@ class Urls extends Component
 
         if (empty($this->exporters)) {
             $this->exporters = \Yii::createObject(Exporters::class);
+        }
+
+        if (empty($this->stepGrainOwners)) {
+            $this->stepGrainOwners = \Yii::createObject(StepGrainOwners::class);
         }
     }
 }
