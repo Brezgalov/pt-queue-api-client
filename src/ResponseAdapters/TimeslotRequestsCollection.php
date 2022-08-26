@@ -5,7 +5,7 @@ namespace Brezgalov\QueueApiClient\ResponseAdapters;
 use Brezgalov\BaseApiClient\ResponseAdapters\BaseResponseAdapter;
 use Brezgalov\QueueApiClient\ResponseAdapters\Dto\TimeslotRequestDto;
 
-class TimeslotRequest extends BaseResponseAdapter
+class TimeslotRequestsCollection extends BaseResponseAdapter
 {
     /**
      * @return TimeslotRequestDto[]

@@ -3,9 +3,9 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
-use Brezgalov\BaseApiClient\ResponseAdapters\TimeslotRequest;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
+use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Request;
 
@@ -144,7 +144,7 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param CreateTimeRequestBody $requestBody
-     * @return TimeslotRequest
+     * @return TimeslotRequestsCollection
      * @throws InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
@@ -154,7 +154,7 @@ class QueueApiClient extends BaseApiClient
             ->setMethod('POST')
             ->setData($requestBody->getBody());
 
-        return new TimeslotRequest($request, $request->send());
+        return new TimeslotRequestsCollection($request, $request->send());
     }
 
     /**
