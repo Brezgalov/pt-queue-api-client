@@ -6,6 +6,7 @@ use Brezgalov\QueueApiClient\Urls\Cultures;
 use Brezgalov\QueueApiClient\Urls\Exporters;
 use Brezgalov\QueueApiClient\Urls\StepGrainOwners;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
+use Brezgalov\QueueApiClient\Urls\TimeslotRequests;
 use Brezgalov\QueueApiClient\Urls\TruckTypes;
 use yii\base\Component;
 
@@ -41,6 +42,11 @@ class Urls extends Component
     public $stepGrainOwners;
 
     /**
+     * @var TimeslotRequests
+     */
+    public $timeslotRequests;
+
+    /**
      * Urls constructor.
      * @param array $config
      */
@@ -66,6 +72,10 @@ class Urls extends Component
 
         if (empty($this->stepGrainOwners)) {
             $this->stepGrainOwners = \Yii::createObject(StepGrainOwners::class);
+        }
+
+        if (empty($this->timeslotRequests)) {
+            $this->timeslotRequests = \Yii::createObject(TimeslotRequests::class);
         }
     }
 }

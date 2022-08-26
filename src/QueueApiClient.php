@@ -3,6 +3,8 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
+use Brezgalov\BaseApiClient\ResponseAdapters\TimeslotRequest;
+use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Request;
@@ -138,6 +140,21 @@ class QueueApiClient extends BaseApiClient
     public function getStepGrainOwnersListRequest()
     {
         return $this->prepareRequest($this->urls->stepGrainOwners->list);
+    }
+
+    /**
+     * @param CreateTimeRequestBody $requestBody
+     * @return TimeslotRequest
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    public function createTimeRequest(CreateTimeRequestBody $requestBody)
+    {
+        $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest)
+            ->setMethod('POST')
+            ->setData($requestBody->getBody());
+
+        return new TimeslotRequest($request, $request->send());
     }
 
     /**
