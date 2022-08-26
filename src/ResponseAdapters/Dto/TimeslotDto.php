@@ -1,6 +1,6 @@
 <?php
 
-namespace Brezgalov\BaseApiClient\ResponseAdapters\Dto;
+namespace Brezgalov\QueueApiClient\ResponseAdapters\Dto;
 
 use Brezgalov\QueueApiClient\ResponseAdapters\ITimeslotDto;
 use yii\base\Component;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Brezgalov\BaseApiClient\ResponseAdapters;
+namespace Brezgalov\QueueApiClient\ResponseAdapters;
 
 use Brezgalov\QueueApiClient\ResponseAdapters\ITimeslotDto;
 
