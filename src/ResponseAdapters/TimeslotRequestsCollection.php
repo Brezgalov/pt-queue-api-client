@@ -17,7 +17,13 @@ class TimeslotRequestsCollection extends BaseResponseAdapter
         }
 
         $result = [];
-        foreach ($this->responseData as $item) {
+        foreach ($this->responseData as $key => $item) {
+            // Дебильный интерфейс в котором приходит то объект то массив, пздц
+            if (!is_integer($key)) {
+                $result[] = new TimeslotRequestDto($this->responseData);
+                break;
+            }
+
             $result[] = new TimeslotRequestDto($item);
         }
 
