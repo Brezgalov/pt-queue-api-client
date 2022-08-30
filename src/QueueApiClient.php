@@ -3,6 +3,8 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
+use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
+use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
@@ -155,6 +157,28 @@ class QueueApiClient extends BaseApiClient
             ->setData($requestBody->getBody());
 
         return new TimeslotRequestsCollection($request, $request->send());
+    }
+
+    /**
+     * @param AutofillsListRequestParams|null $params
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getAutofillsListRequest(AutofillsListRequestParams $params = null)
+    {
+        return $this->prepareRequest($this->urls->timeslotRequestAutofills->list, $params ? $params->getParams() : []);
+    }
+
+    /**
+     * @param AutofillsCreateRequestBody $body
+     * @return \yii\httpclient\Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getCreateAutofillRequest(AutofillsCreateRequestBody $body)
+    {
+        return $this->prepareRequest($this->urls->timeslotRequestAutofills->create)
+            ->setMethod('POST')
+            ->setData($body->getBody());
     }
 
     /**

@@ -6,6 +6,7 @@ use Brezgalov\QueueApiClient\Urls\Cultures;
 use Brezgalov\QueueApiClient\Urls\Exporters;
 use Brezgalov\QueueApiClient\Urls\StepGrainOwners;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
+use Brezgalov\QueueApiClient\Urls\TimeslotRequestAutofills;
 use Brezgalov\QueueApiClient\Urls\TimeslotRequests;
 use Brezgalov\QueueApiClient\Urls\TruckTypes;
 use yii\base\Component;
@@ -47,6 +48,11 @@ class Urls extends Component
     public $timeslotRequests;
 
     /**
+     * @var TimeslotRequestAutofills
+     */
+    public $timeslotRequestAutofills;
+
+    /**
      * Urls constructor.
      * @param array $config
      */
@@ -54,28 +60,20 @@ class Urls extends Component
     {
         parent::__construct($config);
 
-        if (empty($this->stevedoreUnloads)) {
-            $this->stevedoreUnloads = \Yii::createObject(StevedoreUnloads::class);
-        }
+        $defaults = [
+            'stevedoreUnloads' => StevedoreUnloads::class,
+            'cultures' => Cultures::class,
+            'truckTypes' => TruckTypes::class,
+            'exporters' => Exporters::class,
+            'stepGrainOwners' => StepGrainOwners::class,
+            'timeslotRequests' => TimeslotRequests::class,
+            'timeslotRequestAutofills' => TimeslotRequestAutofills::class,
+        ];
 
-        if (empty($this->cultures)) {
-            $this->cultures = \Yii::createObject(Cultures::class);
-        }
-
-        if (empty($this->truckTypes)) {
-            $this->truckTypes = \Yii::createObject(TruckTypes::class);
-        }
-
-        if (empty($this->exporters)) {
-            $this->exporters = \Yii::createObject(Exporters::class);
-        }
-
-        if (empty($this->stepGrainOwners)) {
-            $this->stepGrainOwners = \Yii::createObject(StepGrainOwners::class);
-        }
-
-        if (empty($this->timeslotRequests)) {
-            $this->timeslotRequests = \Yii::createObject(TimeslotRequests::class);
+        foreach ($defaults as $field => $setup) {
+            if (empty($this->{$field})) {
+                $this->{$field} = \Yii::createObject($setup);
+            }
         }
     }
 }
