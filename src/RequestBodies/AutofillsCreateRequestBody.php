@@ -64,12 +64,12 @@ class AutofillsCreateRequestBody extends Component implements IRequestBody
     public function getBody()
     {
         return [
-            'unload_id' => 'unloadId',
-            'name',
-            'plate_truck' => 'plateTruck',
-            'plate_trailer' => 'plateTrailer',
-            'phone',
-            'truck_type_code' => 'truckTypeCode',
+            'unload_id' => intval($this->unloadId),
+            'name' => $this->name,
+            'plate_truck' => $this->plateTruck,
+            'plate_trailer' => $this->plateTrailer,
+            'phone' => $this->phone,
+            'truck_type_code' => $this->truckTypeCode,
         ];
     }
 }
