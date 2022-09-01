@@ -8,6 +8,7 @@ use Brezgalov\QueueApiClient\Urls\StepGrainOwners;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
 use Brezgalov\QueueApiClient\Urls\TimeslotRequestAutofills;
 use Brezgalov\QueueApiClient\Urls\TimeslotRequests;
+use Brezgalov\QueueApiClient\Urls\Timeslots;
 use Brezgalov\QueueApiClient\Urls\TruckTypes;
 use yii\base\Component;
 
@@ -53,6 +54,11 @@ class Urls extends Component
     public $timeslotRequestAutofills;
 
     /**
+     * @var Timeslots
+     */
+    public $timeslots;
+
+    /**
      * Urls constructor.
      * @param array $config
      */
@@ -68,6 +74,7 @@ class Urls extends Component
             'stepGrainOwners' => StepGrainOwners::class,
             'timeslotRequests' => TimeslotRequests::class,
             'timeslotRequestAutofills' => TimeslotRequestAutofills::class,
+            'timeslots' => Timeslots::class,
         ];
 
         foreach ($defaults as $field => $setup) {
@@ -75,5 +82,7 @@ class Urls extends Component
                 $this->{$field} = \Yii::createObject($setup);
             }
         }
+
+
     }
 }

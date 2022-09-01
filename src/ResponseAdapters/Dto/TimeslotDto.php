@@ -393,4 +393,60 @@ class TimeslotDto extends Component implements ITimeslotDto
     {
         return $this->extras;
     }
+
+    /**
+     * @return integer
+     */
+    public function getStepTruckSpindlesCount()
+    {
+        return $this->extras['step']['truck_spindles_count'] ?? null;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStepTrailerSpindlesCount()
+    {
+        return $this->extras['step']['trailer_spindles_count'] ?? null;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStepGrainOwnerId()
+    {
+        return $this->extras['step']['step_grain_owner_id'] ?? null;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStepSupplierId()
+    {
+        return $this->extras['step']['step_supplier_id'] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStepGrainOwnerName()
+    {
+        return $this->extras['step']['step_grain_owner_name'] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStepSupplierName()
+    {
+        return $this->extras['step']['step_supplier_name'] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStepSupplierInn()
+    {
+        return $this->extras['step']['step_supplier_inn'] ?? null;
+    }
 }

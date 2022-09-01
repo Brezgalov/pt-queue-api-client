@@ -6,9 +6,13 @@ use Brezgalov\BaseApiClient\BaseApiClient;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
+use Brezgalov\QueueApiClient\RequestBodies\SubmitTimeslotRequestBody;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
+use Brezgalov\QueueApiClient\ResponseAdapters\Timeslot;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
 use yii\base\InvalidConfigException;
+use yii\httpclient\Exception;
+use yii\httpclient\Message;
 use yii\httpclient\Request;
 
 class QueueApiClient extends BaseApiClient
@@ -41,7 +45,7 @@ class QueueApiClient extends BaseApiClient
     /**
      * AuthServiceClient constructor.
      * @param array $config
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function __construct($config = [])
     {
@@ -78,7 +82,7 @@ class QueueApiClient extends BaseApiClient
      * @param int $unloadId
      * @return StevedoreUnload
      * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
     public function getStevedoreUnload(int $unloadId)
     {
@@ -91,7 +95,7 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param int|null $cityId
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getCitiesListRequest(int $cityId = null)
@@ -107,7 +111,7 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param int|null $unloadId
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getCulturesListRequest(int $unloadId = null)
@@ -118,7 +122,7 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getTruckTypesListRequest()
@@ -127,7 +131,7 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getExportersListRequest()
@@ -136,7 +140,7 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getStepGrainOwnersListRequest()
@@ -148,7 +152,7 @@ class QueueApiClient extends BaseApiClient
      * @param CreateTimeRequestBody $requestBody
      * @return TimeslotRequestsCollection
      * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
     public function createTimeRequest(CreateTimeRequestBody $requestBody)
     {
@@ -161,7 +165,7 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param AutofillsListRequestParams|null $params
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getAutofillsListRequest(AutofillsListRequestParams $params = null)
@@ -171,7 +175,7 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param AutofillsCreateRequestBody $body
-     * @return \yii\httpclient\Message|Request
+     * @return Message|Request
      * @throws InvalidConfigException
      */
     public function getCreateAutofillRequest(AutofillsCreateRequestBody $body)
@@ -182,12 +186,45 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param SubmitTimeslotRequestBody $body
+     * @return Timeslot
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function submitTimeslot(SubmitTimeslotRequestBody $body)
+    {
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+            ->setMethod('POST')
+            ->setData($body->getBody());
+
+        return new Timeslot($request, $request->send());
+    }
+
+    /**
+     * @param int $timeslotId
+     * @return Timeslot
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function denyTimeslot(int $timeslotId)
+    {
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+            ->setMethod('POST')
+            ->setData([
+                'timeslot_id' => $timeslotId,
+                'submit' => 0,
+            ]);
+
+        return new Timeslot($request, $request->send());
+    }
+
+    /**
      * @param string $route
      * @param array $queryParams
      * @param bool $useAppEnv
      * @param Request|null $request
-     * @return \yii\httpclient\Message|Request
-     * @throws \yii\base\InvalidConfigException
+     * @return Message|Request
+     * @throws InvalidConfigException
      */
     public function prepareRequest(string $route, array $queryParams = [], Request $request = null)
     {

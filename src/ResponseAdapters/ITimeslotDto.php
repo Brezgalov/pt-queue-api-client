@@ -176,4 +176,39 @@ interface ITimeslotDto
      * @return array
      */
     public function getExtras();
+
+    /**
+     * @return integer
+     */
+    public function getStepTruckSpindlesCount();
+
+    /**
+     * @return integer
+     */
+    public function getStepTrailerSpindlesCount();
+
+    /**
+     * @return integer
+     */
+    public function getStepGrainOwnerId();
+
+    /**
+     * @return integer
+     */
+    public function getStepSupplierId();
+
+    /**
+     * @return string
+     */
+    public function getStepGrainOwnerName();
+
+    /**
+     * @return string
+     */
+    public function getStepSupplierName();
+
+    /**
+     * @return string
+     */
+    public function getStepSupplierInn();
 }
