@@ -17,6 +17,6 @@ class Timeslots extends Component
      */
     public function getSubmitTimeslot()
     {
-        return "timeslots/submit";
+        return "timeslots/submit-fmtd";
     }
 }
