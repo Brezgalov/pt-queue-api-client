@@ -219,6 +219,18 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param int $timeslotId
+     * @return Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getDropTimeslotRequest(int $timeslotId)
+    {
+        return $this->prepareRequest($this->urls->timeslots->dropTimeslot, [
+            'timeslot_id' => $timeslotId,
+        ])->setMethod('DELETE');
+    }
+
+    /**
      * @param string $route
      * @param array $queryParams
      * @param bool $useAppEnv
