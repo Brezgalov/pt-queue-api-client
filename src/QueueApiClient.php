@@ -231,6 +231,18 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param string $inn
+     * @return Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getStepSuppliersCheckInnRequest(string $inn)
+    {
+        return $this->prepareRequest($this->urls->stepSuppliers->checkInn, [
+            'inn' => $inn,
+        ]);
+    }
+
+    /**
      * @param string $route
      * @param array $queryParams
      * @param bool $useAppEnv

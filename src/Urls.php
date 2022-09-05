@@ -5,6 +5,7 @@ namespace Brezgalov\QueueApiClient;
 use Brezgalov\QueueApiClient\Urls\Cultures;
 use Brezgalov\QueueApiClient\Urls\Exporters;
 use Brezgalov\QueueApiClient\Urls\StepGrainOwners;
+use Brezgalov\QueueApiClient\Urls\StepSuppliers;
 use Brezgalov\QueueApiClient\Urls\StevedoreUnloads;
 use Brezgalov\QueueApiClient\Urls\TimeslotRequestAutofills;
 use Brezgalov\QueueApiClient\Urls\TimeslotRequests;
@@ -44,6 +45,11 @@ class Urls extends Component
     public $stepGrainOwners;
 
     /**
+     * @var StepSuppliers
+     */
+    public $stepSuppliers;
+
+    /**
      * @var TimeslotRequests
      */
     public $timeslotRequests;
@@ -72,6 +78,7 @@ class Urls extends Component
             'truckTypes' => TruckTypes::class,
             'exporters' => Exporters::class,
             'stepGrainOwners' => StepGrainOwners::class,
+            'stepSuppliers' => StepSuppliers::class,
             'timeslotRequests' => TimeslotRequests::class,
             'timeslotRequestAutofills' => TimeslotRequestAutofills::class,
             'timeslots' => Timeslots::class,
@@ -82,7 +89,5 @@ class Urls extends Component
                 $this->{$field} = \Yii::createObject($setup);
             }
         }
-
-
     }
 }
