@@ -19,7 +19,7 @@ class Timeslot extends BaseResponseAdapter implements ITimeslotDto
      */
     public function getTime()
     {
-        return $this->responseData['id'] ?? null;
+        return $this->responseData['time'] ?? null;
     }
 
     /**
