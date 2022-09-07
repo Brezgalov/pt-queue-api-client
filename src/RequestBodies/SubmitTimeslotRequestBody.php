@@ -64,9 +64,9 @@ class SubmitTimeslotRequestBody implements IRequestBody
     public function __construct(
         int $timeslotId,
         string $plateTruck,
-        string $plateTrailer,
         string $phone,
         string $name,
+        string $plateTrailer = null,
         string $truckTypeCode = null,
         int $truckSpindlesCount = null,
         int $trailerSpindlesCount = null,
