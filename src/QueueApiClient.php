@@ -276,6 +276,25 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
+     * @return TimeslotsCollection
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function getMyTimeslotsAll(TimeslotsSearchRequestParams $timeslotSearchParams = null)
+    {
+        $request = $this->prepareRequest(
+            $this->urls->pages->myTimeslots,
+            $timeslotSearchParams ? $timeslotSearchParams->getParams() : []
+        );
+
+        return \Yii::createObject(TimeslotsCollection::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
+    }
+
+    /**
      * @param string $route
      * @param array $queryParams
      * @param bool $useAppEnv

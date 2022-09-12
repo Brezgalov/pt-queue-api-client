@@ -9,6 +9,7 @@ use yii\base\Component;
  * @package Brezgalov\QueueApiClient\Urls
  *
  * @property-read string $myTimeslots
+ * @property-read string $myTimeslotsAll
  */
 class Pages extends Component
 {
@@ -18,5 +19,13 @@ class Pages extends Component
     public function getMyTimeslots()
     {
         return 'pages/my-timeslots';
+    }
+
+    /**
+     * @return string
+     */
+    public function getMyTimeslotsAll()
+    {
+        return 'pages/my-timeslots-all';
     }
 }
