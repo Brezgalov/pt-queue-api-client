@@ -98,6 +98,11 @@ interface ITimeslotDto
     public function getTruckTypeCode();
 
     /**
+     * @return string
+     */
+    public function getTruckTypeName();
+
+    /**
      * @return int
      */
     public function getCultureId();

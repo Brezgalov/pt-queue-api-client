@@ -87,6 +87,14 @@ class Timeslot extends BaseResponseAdapter implements ITimeslotDto
     }
 
     /**
+     * @return string
+     */
+    public function getTruckTypeName()
+    {
+        return $this->responseData['truck_type_name'] ?? null;
+    }
+
+    /**
      * @return int
      */
     public function getCultureId()

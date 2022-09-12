@@ -58,6 +58,11 @@ class TimeslotDto extends Component implements ITimeslotDto
     protected $truckTypeCode;
 
     /**
+     * @var string
+     */
+    protected $truckTypeName;
+
+    /**
      * @var int
      */
     protected $cultureId;
@@ -153,6 +158,7 @@ class TimeslotDto extends Component implements ITimeslotDto
             'truckStatus' => 'truck_status',
             'submitStatus' => 'submit_status',
             'truckTypeCode' => 'truck_type_code',
+            'truckTypeName' => 'truck_type_name',
             'cultureId' => 'culture_id',
             'cultureName' => 'culture_name',
             'cultureHarvestYear' => 'culture_harvest_year',
@@ -264,6 +270,14 @@ class TimeslotDto extends Component implements ITimeslotDto
     public function getTruckTypeCode()
     {
         return $this->truckTypeCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTruckTypeName()
+    {
+        return $this->truckTypeName;
     }
 
     /**
