@@ -7,9 +7,11 @@ use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\SubmitTimeslotRequestBody;
+use Brezgalov\QueueApiClient\RequestBodies\TimeslotsSearchRequestParams;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use Brezgalov\QueueApiClient\ResponseAdapters\Timeslot;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
+use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotsCollection;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Message;
@@ -90,7 +92,10 @@ class QueueApiClient extends BaseApiClient
             'id' => $unloadId,
         ]);
 
-        return new StevedoreUnload($request, $request->send());
+        return \Yii::createObject(StevedoreUnload::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
     }
 
     /**
@@ -160,7 +165,10 @@ class QueueApiClient extends BaseApiClient
             ->setMethod('POST')
             ->setData($requestBody->getBody());
 
-        return new TimeslotRequestsCollection($request, $request->send());
+        return \Yii::createObject(TimeslotRequestsCollection::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
     }
 
     /**
@@ -197,7 +205,10 @@ class QueueApiClient extends BaseApiClient
             ->setMethod('POST')
             ->setData($body->getBody());
 
-        return new Timeslot($request, $request->send());
+        return \Yii::createObject(Timeslot::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
     }
 
     /**
@@ -215,7 +226,10 @@ class QueueApiClient extends BaseApiClient
                 'submit' => 0,
             ]);
 
-        return new Timeslot($request, $request->send());
+        return \Yii::createObject(Timeslot::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
     }
 
     /**
@@ -239,6 +253,25 @@ class QueueApiClient extends BaseApiClient
     {
         return $this->prepareRequest($this->urls->stepSuppliers->checkInn, [
             'inn' => $inn,
+        ]);
+    }
+
+    /**
+     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
+     * @return TimeslotsCollection
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function getMyTimeslots(TimeslotsSearchRequestParams $timeslotSearchParams = null)
+    {
+        $request = $this->prepareRequest(
+            $this->urls->pages->myTimeslots,
+            $timeslotSearchParams ? $timeslotSearchParams->getParams() : []
+        );
+
+        return \Yii::createObject(TimeslotsCollection::class, [
+            'request' => $request,
+            'response' => $request->send(),
         ]);
     }
 
