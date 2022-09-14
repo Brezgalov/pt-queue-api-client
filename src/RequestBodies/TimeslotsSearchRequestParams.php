@@ -38,6 +38,11 @@ class TimeslotsSearchRequestParams extends Component implements IRequestParams
     public $submitStatus;
 
     /**
+     * @var bool
+     */
+    public $submitted;
+
+    /**
      * @var string
      */
     public $truckStatus;
@@ -97,12 +102,18 @@ class TimeslotsSearchRequestParams extends Component implements IRequestParams
      */
     public function getParams()
     {
+        $submitted = null;
+        if (!is_null($this->submitted)) {
+            $submitted = $this->submitted ? 1 : 0;
+        }
+
         return [
             'id' => $this->id,
             'time_from' => $this->timeFrom,
             'time_to' => $this->timeTo,
             'plate_truck' => $this->plateTruck,
             'plate_truck_like' => $this->plateTruckLike,
+            'submitted' => $submitted,
             'submit_status' => $this->submitStatus,
             'truck_status' => $this->truckStatus,
             'truck_type_code' => $this->truckTypeCode,
