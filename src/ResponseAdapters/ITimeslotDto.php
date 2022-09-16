@@ -55,7 +55,12 @@ interface ITimeslotDto
     /**
      * @return int
      */
-    public function getTime();
+    public function getTimeFrom();
+
+    /**
+     * @return int
+     */
+    public function getTimeTo();
 
     /**
      * @return string

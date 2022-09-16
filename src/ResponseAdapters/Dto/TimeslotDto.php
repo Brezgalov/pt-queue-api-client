@@ -5,6 +5,13 @@ namespace Brezgalov\QueueApiClient\ResponseAdapters\Dto;
 use Brezgalov\QueueApiClient\ResponseAdapters\ITimeslotDto;
 use yii\base\Component;
 
+/**
+ * Class TimeslotDto
+ * @package Brezgalov\QueueApiClient\ResponseAdapters\Dto
+ *
+ * @property int $timeFrom
+ * @property int $timeTo
+ */
 class TimeslotDto extends Component implements ITimeslotDto
 {
     /**
@@ -15,7 +22,12 @@ class TimeslotDto extends Component implements ITimeslotDto
     /**
      * @var int
      */
-    protected $time;
+    protected $_timeFrom;
+
+    /**
+     * @var int
+     */
+    protected $_timeTo;
 
     /**
      * @var string
@@ -149,7 +161,8 @@ class TimeslotDto extends Component implements ITimeslotDto
     {
         return [
             'id' => 'id',
-            'time' => 'time',
+            'timeFrom' => 'window_from',
+            'timeTo' => 'window_to',
             'plateTruck' => 'plate_truck',
             'plateTrailer' => 'plate_trailer',
             'phone' => 'phone',
@@ -203,9 +216,33 @@ class TimeslotDto extends Component implements ITimeslotDto
     /**
      * @return int
      */
-    public function getTime()
+    public function getTimeFrom()
     {
-        return $this->time;
+        return $this->_timeFrom;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTimeFrom($value)
+    {
+        $this->_timeFrom = is_integer($value) ? $value : strtotime($value);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeTo()
+    {
+        return $this->_timeTo;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setTimeTo($value)
+    {
+        $this->_timeTo = is_integer($value) ? $value : strtotime($value);
     }
 
     /**

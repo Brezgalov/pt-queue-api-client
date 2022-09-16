@@ -17,9 +17,25 @@ class Timeslot extends BaseResponseAdapter implements ITimeslotDto
     /**
      * @return int
      */
-    public function getTime()
+    public function getTimeFrom()
     {
-        return $this->responseData['time'] ?? null;
+        if (!array_key_exists('window_from', $this->responseData)) {
+            return null;
+        }
+
+        return strtotime($this->responseData['window_from']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeTo()
+    {
+        if (!array_key_exists('window_to', $this->responseData)) {
+            return null;
+        }
+
+        return strtotime($this->responseData['window_to']);
     }
 
     /**
