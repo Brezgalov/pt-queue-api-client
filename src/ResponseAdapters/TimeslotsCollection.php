@@ -29,10 +29,7 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator
      */
     public function current()
     {
-        if (
-            !is_array($this->responseData)
-            || !array_key_exists($this->position, $this->responseData)
-        ) {
+        if (!is_array($this->responseData) || !array_key_exists($this->position, $this->responseData)) {
             return null;
         }
 
@@ -60,6 +57,6 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator
      */
     public function valid()
     {
-        return array_key_exists($this->position, $this->responseData);
+        return is_array($this->responseData) && array_key_exists($this->position, $this->responseData);
     }
 }
