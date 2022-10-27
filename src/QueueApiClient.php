@@ -70,6 +70,14 @@ class QueueApiClient extends BaseApiClient
     }
 
     /**
+     * @return string|null
+     */
+    public function getActivityId(): ?string
+    {
+        return $this->activityId;
+    }
+
+    /**
      * @param string $value
      * @return $this
      */
