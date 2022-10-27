@@ -203,15 +203,25 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param SubmitTimeslotRequestBody $body
+     * @return Message|Request
+     * @throws InvalidConfigException
+     */
+    public function prepareSubmitTimeslotRequest(SubmitTimeslotRequestBody $body)
+    {
+        return $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+            ->setMethod('POST')
+            ->setData($body->getBody());
+    }
+
+    /**
+     * @param SubmitTimeslotRequestBody $body
      * @return Timeslot
      * @throws InvalidConfigException
      * @throws Exception
      */
     public function submitTimeslot(SubmitTimeslotRequestBody $body)
     {
-        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
-            ->setMethod('POST')
-            ->setData($body->getBody());
+        $request = $this->prepareSubmitTimeslotRequest($body);
 
         return \Yii::createObject(Timeslot::class, [
             'request' => $request,
