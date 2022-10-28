@@ -8,6 +8,7 @@ use yii\base\Component;
  * Class Timeslots
  * @package Brezgalov\QueueApiClient\Urls
  *
+ * @property-read string $listFormatted
  * @property-read string $submitTimeslot
  * @property-read string $dropTimeslot
  */
@@ -16,7 +17,15 @@ class Timeslots extends Component
     /**
      * @return string
      */
-    public function getSubmitTimeslot()
+    public function getListFormatted(): string
+    {
+        return "timeslots/list-fmtd";
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubmitTimeslot(): string
     {
         return "timeslots/submit-fmtd";
     }
@@ -24,7 +33,7 @@ class Timeslots extends Component
     /**
      * @return string
      */
-    public function getDropTimeslot()
+    public function getDropTimeslot(): string
     {
         return "timeslots/drop";
     }

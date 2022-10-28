@@ -3,6 +3,7 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
+use Brezgalov\BaseApiClient\Exception\RequestFailedException;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
@@ -203,37 +204,30 @@ class QueueApiClient extends BaseApiClient
 
     /**
      * @param SubmitTimeslotRequestBody $body
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function prepareSubmitTimeslotRequest(SubmitTimeslotRequestBody $body)
-    {
-        return $this->prepareRequest($this->urls->timeslots->submitTimeslot)
-            ->setMethod('POST')
-            ->setData($body->getBody());
-    }
-
-    /**
-     * @param SubmitTimeslotRequestBody $body
      * @return Timeslot
      * @throws InvalidConfigException
-     * @throws Exception
+     * @throws RequestFailedException
      */
-    public function submitTimeslot(SubmitTimeslotRequestBody $body)
+    public function submitTimeslot(SubmitTimeslotRequestBody $body): Timeslot
     {
-        $request = $this->prepareSubmitTimeslotRequest($body);
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+            ->setMethod('POST')
+            ->setData($body->getBody());
 
-        return \Yii::createObject(Timeslot::class, [
-            'request' => $request,
-            'response' => $request->send(),
-        ]);
+        try {
+            $response = $request->send();
+        } catch (\Exception $ex) {
+            throw new RequestFailedException($request);
+        }
+
+        return new Timeslot($request, $response);
     }
 
     /**
      * @param int $timeslotId
      * @return Timeslot
-     * @throws Exception
      * @throws InvalidConfigException
+     * @throws Exception
      */
     public function denyTimeslot(int $timeslotId)
     {
@@ -284,6 +278,25 @@ class QueueApiClient extends BaseApiClient
     {
         $request = $this->prepareRequest(
             $this->urls->pages->myTimeslots,
+            $timeslotSearchParams ? $timeslotSearchParams->getParams() : []
+        );
+
+        return \Yii::createObject(TimeslotsCollection::class, [
+            'request' => $request,
+            'response' => $request->send(),
+        ]);
+    }
+
+    /**
+     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
+     * @return TimeslotsCollection
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function getTimeslotsInfoFormatted(TimeslotsSearchRequestParams $timeslotSearchParams = null): TimeslotsCollection
+    {
+        $request = $this->prepareRequest(
+            $this->urls->timeslots->listFormatted,
             $timeslotSearchParams ? $timeslotSearchParams->getParams() : []
         );
 
