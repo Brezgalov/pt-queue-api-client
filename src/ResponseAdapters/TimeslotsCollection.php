@@ -29,11 +29,7 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator, \Arr
      */
     public function current()
     {
-        if (!is_array($this->responseData) || !array_key_exists($this->position, $this->responseData)) {
-            return null;
-        }
-
-        return new TimeslotDto($this->responseData[$this->position]);
+        return $this->offsetGet($this->position);
     }
 
     /**
@@ -57,7 +53,7 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator, \Arr
      */
     public function valid()
     {
-        return is_array($this->responseData) && array_key_exists($this->position, $this->responseData);
+        return $this->offsetExists($this->position);
     }
 
     /**
@@ -73,7 +69,7 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator, \Arr
      */
     public function offsetExists($offset)
     {
-        return $this->getIsOk() && array_key_exists($offset, $this->responseData);
+        return $this->getIsOk() && is_array($this->responseData) && array_key_exists($offset, $this->responseData);
     }
 
     /**
@@ -86,7 +82,7 @@ class TimeslotsCollection extends BaseResponseAdapter implements \Iterator, \Arr
      */
     public function offsetGet($offset)
     {
-        return $this->getIsOk() ? $this->responseData[$offset] : null;
+        return $this->getIsOk() && $this->offsetExists($offset) ? new TimeslotDto($this->responseData[$offset]) : null;
     }
 
     /**
