@@ -53,9 +53,9 @@ class SubmitTimeslotRequestBody implements IRequestBody
      * SubmitTimeslotRequestBody constructor.
      * @param int $timeslotId
      * @param string $plateTruck
-     * @param string $plateTrailer
      * @param string $phone
      * @param string $name
+     * @param string|null $plateTrailer
      * @param string|null $truckTypeCode
      * @param int|null $truckSpindlesCount
      * @param int|null $trailerSpindlesCount
@@ -78,7 +78,7 @@ class SubmitTimeslotRequestBody implements IRequestBody
         $this->phone = $phone;
         $this->name = $name;
         $this->truckTypeCode = $truckTypeCode;
-        $this->trailerSpindlesCount = $truckSpindlesCount;
+        $this->truckSpindlesCount = $truckSpindlesCount;
         $this->trailerSpindlesCount = $trailerSpindlesCount;
         $this->stepSupplierId = $stepSupplierId;
     }
