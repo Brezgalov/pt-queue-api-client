@@ -3,7 +3,6 @@
 namespace Brezgalov\QueueApiClient\RequestBodies;
 
 use yii\base\Component;
-use Brezgalov\QueueApiClient\RequestBodies\IRequestParams;
 
 class TimeslotsSearchRequestParams extends Component implements IRequestParams
 {

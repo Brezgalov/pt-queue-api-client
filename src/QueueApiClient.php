@@ -7,6 +7,7 @@ use Brezgalov\BaseApiClient\Exception\RequestFailedException;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
+use Brezgalov\QueueApiClient\RequestBodies\StevedoreUnloadsFilter;
 use Brezgalov\QueueApiClient\RequestBodies\SubmitTimeslotRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\TimeslotsSearchRequestParams;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
@@ -105,6 +106,16 @@ class QueueApiClient extends BaseApiClient
             'request' => $request,
             'response' => $request->send(),
         ]);
+    }
+
+    /**
+     * @param StevedoreUnloadsFilter|null $filter
+     * @return Message|Request
+     * @throws InvalidConfigException
+     */
+    public function getStevedoreUnloadsListRequest(StevedoreUnloadsFilter $filter = null)
+    {
+        return $this->prepareRequest($this->urls->stevedoreUnloads->list, $filter ? $filter->getParams() : []);
     }
 
     /**
