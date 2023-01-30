@@ -14,10 +14,11 @@ use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use Brezgalov\QueueApiClient\ResponseAdapters\Timeslot;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotsCollection;
+use Throwable;
 use yii\base\InvalidConfigException;
-use yii\httpclient\Exception;
 use yii\httpclient\Message;
 use yii\httpclient\Request;
+use yii\httpclient\Response;
 
 class QueueApiClient extends BaseApiClient
 {
@@ -46,11 +47,10 @@ class QueueApiClient extends BaseApiClient
      */
     public $activityIdParameterName = 'activity_id';
 
-    /**
-     * AuthServiceClient constructor.
-     * @param array $config
-     * @throws InvalidConfigException
-     */
+    private $onPrepareRequestCallbacks = [];
+    private $onSendSucceedCallbacks = [];
+    private $onSendFailedCallbacks = [];
+
     public function __construct($config = [])
     {
         parent::__construct($config);
@@ -60,43 +60,56 @@ class QueueApiClient extends BaseApiClient
         }
     }
 
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function setActivityId(string $value)
+    public function setActivityId(string $value): QueueApiClient
     {
         $this->activityId = $value;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getActivityId(): ?string
     {
         return $this->activityId;
     }
 
-    /**
-     * @param string $value
-     * @return $this
-     */
-    public function setToken(string $value)
+    public function setToken(string $value): QueueApiClient
     {
         $this->token = $value;
 
         return $this;
     }
 
-    /**
-     * @param int $unloadId
-     * @return StevedoreUnload
-     * @throws InvalidConfigException
-     * @throws Exception
-     */
-    public function getStevedoreUnload(int $unloadId)
+    public function addOnPrepareRequestCallback(callable $callback): QueueApiClient
+    {
+        $this->onPrepareRequestCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    public function addOnSendSucceedCallback(callable $callback): QueueApiClient
+    {
+        $this->onSendSucceedCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    public function addOnSendFailedCallback(callable $callback): QueueApiClient
+    {
+        $this->onSendFailedCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    public function clearEvents(): QueueApiClient
+    {
+        $this->onPrepareRequestCallbacks = [];
+        $this->onSendSucceedCallbacks = [];
+        $this->onSendFailedCallbacks = [];
+
+        return $this;
+    }
+
+    public function getStevedoreUnload(int $unloadId): StevedoreUnload
     {
         $request = $this->prepareRequest($this->urls->stevedoreUnloads->single, [
             'id' => $unloadId,
@@ -104,26 +117,16 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(StevedoreUnload::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
-    /**
-     * @param StevedoreUnloadsFilter|null $filter
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getStevedoreUnloadsListRequest(StevedoreUnloadsFilter $filter = null)
+    public function getStevedoreUnloadsListRequest(StevedoreUnloadsFilter $filter = null): Request
     {
         return $this->prepareRequest($this->urls->stevedoreUnloads->list, $filter ? $filter->getParams() : []);
     }
 
-    /**
-     * @param int|null $cityId
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getCitiesListRequest(int $cityId = null)
+    public function getCitiesListRequest(int $cityId = null): Request
     {
         $queryParams = [];
 
@@ -134,32 +137,19 @@ class QueueApiClient extends BaseApiClient
         return $this->prepareRequest($this->urls->stevedoreUnloads->citiesList, $queryParams);
     }
 
-    /**
-     * @param int|null $unloadId
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getCulturesListRequest(int $unloadId = null)
+    public function getCulturesListRequest(int $unloadId = null): Request
     {
         return $this->prepareRequest($this->urls->cultures->list, [
             'unload_id' => $unloadId,
         ]);
     }
 
-    /**
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getTruckTypesListRequest()
+    public function getTruckTypesListRequest(): Request
     {
         return $this->prepareRequest($this->urls->truckTypes->list);
     }
 
-    /**
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getExportersListRequest()
+    public function getExportersListRequest(): Request
     {
         return $this->prepareRequest($this->urls->exporters->list);
     }
@@ -168,18 +158,12 @@ class QueueApiClient extends BaseApiClient
      * @return Message|Request
      * @throws InvalidConfigException
      */
-    public function getStepGrainOwnersListRequest()
+    public function getStepGrainOwnersListRequest(): Request
     {
         return $this->prepareRequest($this->urls->stepGrainOwners->list);
     }
 
-    /**
-     * @param CreateTimeRequestBody $requestBody
-     * @return TimeslotRequestsCollection
-     * @throws InvalidConfigException
-     * @throws Exception
-     */
-    public function createTimeRequest(CreateTimeRequestBody $requestBody)
+    public function createTimeRequest(CreateTimeRequestBody $requestBody): TimeslotRequestsCollection
     {
         $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest)
             ->setMethod('POST')
@@ -187,60 +171,33 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(TimeslotRequestsCollection::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
-    /**
-     * @param AutofillsListRequestParams|null $params
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getAutofillsListRequest(AutofillsListRequestParams $params = null)
+    public function getAutofillsListRequest(AutofillsListRequestParams $params = null): Request
     {
         return $this->prepareRequest($this->urls->timeslotRequestAutofills->list, $params ? $params->getParams() : []);
     }
 
-    /**
-     * @param AutofillsCreateRequestBody $body
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getCreateAutofillRequest(AutofillsCreateRequestBody $body)
+    public function getCreateAutofillRequest(AutofillsCreateRequestBody $body): Request
     {
         return $this->prepareRequest($this->urls->timeslotRequestAutofills->create)
             ->setMethod('POST')
             ->setData($body->getBody());
     }
 
-    /**
-     * @param SubmitTimeslotRequestBody $body
-     * @return Timeslot
-     * @throws InvalidConfigException
-     * @throws RequestFailedException
-     */
     public function submitTimeslot(SubmitTimeslotRequestBody $body): Timeslot
     {
         $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
             ->setMethod('POST')
             ->setData($body->getBody());
 
-        try {
-            $response = $request->send();
-        } catch (\Exception $ex) {
-            throw new RequestFailedException($request);
-        }
 
-        return new Timeslot($request, $response);
+        return new Timeslot($request, $this->sendRequest($request));
     }
 
-    /**
-     * @param int $timeslotId
-     * @return Timeslot
-     * @throws InvalidConfigException
-     * @throws Exception
-     */
-    public function denyTimeslot(int $timeslotId)
+    public function denyTimeslot(int $timeslotId): Timeslot
     {
         $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
             ->setMethod('POST')
@@ -251,41 +208,25 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(Timeslot::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
-    /**
-     * @param int $timeslotId
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getDropTimeslotRequest(int $timeslotId)
+    public function getDropTimeslotRequest(int $timeslotId): Request
     {
         return $this->prepareRequest($this->urls->timeslots->dropTimeslot, [
             'timeslot_id' => $timeslotId,
         ])->setMethod('DELETE');
     }
 
-    /**
-     * @param string $inn
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function getStepSuppliersCheckInnRequest(string $inn)
+    public function getStepSuppliersCheckInnRequest(string $inn): Request
     {
         return $this->prepareRequest($this->urls->stepSuppliers->checkInn, [
             'inn' => $inn,
         ]);
     }
 
-    /**
-     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
-     * @return TimeslotsCollection
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function getMyTimeslots(TimeslotsSearchRequestParams $timeslotSearchParams = null)
+    public function getMyTimeslots(TimeslotsSearchRequestParams $timeslotSearchParams = null): TimeslotsCollection
     {
         $request = $this->prepareRequest(
             $this->urls->pages->myTimeslots,
@@ -294,16 +235,10 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(TimeslotsCollection::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
-    /**
-     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
-     * @return TimeslotsCollection
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
     public function getTimeslotsInfoFormatted(TimeslotsSearchRequestParams $timeslotSearchParams = null): TimeslotsCollection
     {
         $request = $this->prepareRequest(
@@ -313,17 +248,11 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(TimeslotsCollection::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
-    /**
-     * @param TimeslotsSearchRequestParams|null $timeslotSearchParams
-     * @return TimeslotsCollection
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function getMyTimeslotsAll(TimeslotsSearchRequestParams $timeslotSearchParams = null)
+    public function getMyTimeslotsAll(TimeslotsSearchRequestParams $timeslotSearchParams = null): TimeslotsCollection
     {
         $request = $this->prepareRequest(
             $this->urls->pages->myTimeslots,
@@ -332,14 +261,13 @@ class QueueApiClient extends BaseApiClient
 
         return \Yii::createObject(TimeslotsCollection::class, [
             'request' => $request,
-            'response' => $request->send(),
+            'response' => $this->sendRequest($request),
         ]);
     }
 
     /**
      * @param string $route
      * @param array $queryParams
-     * @param bool $useAppEnv
      * @param Request|null $request
      * @return Message|Request
      * @throws InvalidConfigException
@@ -358,6 +286,46 @@ class QueueApiClient extends BaseApiClient
             ]);
         }
 
+        $this->onPrepareRequest($request);
+
         return $request;
+    }
+
+    protected function onPrepareRequest(Request $request): void
+    {
+        foreach ($this->onPrepareRequestCallbacks as $callback) {
+            call_user_func($callback, $request);
+        }
+    }
+
+    public function sendRequest($request): Response
+    {
+        try {
+            $response = $request->send();
+            $this->onSendSuccess($request, $response);
+
+            return $response;
+
+        } catch (Throwable $ex) {
+
+            $requestFailedException = new RequestFailedException($request, $ex->getCode(), $ex);
+            $this->onSendFailed($requestFailedException);
+
+            throw $requestFailedException;
+        }
+    }
+
+    public function onSendSuccess(Request $request, Response $response): void
+    {
+        foreach ($this->onSendSucceedCallbacks as $callback) {
+            call_user_func($callback, $request, $response);
+        }
+    }
+
+    public function onSendFailed(RequestFailedException $requestFailedException): void
+    {
+        foreach ($this->onSendFailedCallbacks as $callback) {
+            call_user_func($callback, $requestFailedException);
+        }
     }
 }
