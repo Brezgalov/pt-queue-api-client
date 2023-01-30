@@ -128,9 +128,11 @@ class QueueApiClient extends BaseApiClient
 
     public function createTimeRequest(CreateTimeRequestBody $requestBody): TimeslotRequestsCollection
     {
-        $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest)
+        $request = $this->makeRequest()
             ->setMethod('POST')
             ->setData($requestBody->getBody());
+
+        $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest, [], $request);
 
         return \Yii::createObject(TimeslotRequestsCollection::class, [
             'request' => $request,
@@ -145,29 +147,34 @@ class QueueApiClient extends BaseApiClient
 
     public function getCreateAutofillRequest(AutofillsCreateRequestBody $body): Request
     {
-        return $this->prepareRequest($this->urls->timeslotRequestAutofills->create)
+        $request = $this->makeRequest()
             ->setMethod('POST')
             ->setData($body->getBody());
+
+        return $this->prepareRequest($this->urls->timeslotRequestAutofills->create, [], $request);
     }
 
     public function submitTimeslot(SubmitTimeslotRequestBody $body): Timeslot
     {
-        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+        $request = $this->makeRequest()
             ->setMethod('POST')
             ->setData($body->getBody());
 
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot, [], $request);
 
         return new Timeslot($request, $this->sendRequest($request));
     }
 
     public function denyTimeslot(int $timeslotId): Timeslot
     {
-        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot)
+        $request = $this->makeRequest()
             ->setMethod('POST')
             ->setData([
                 'timeslot_id' => $timeslotId,
                 'submit' => 0,
             ]);
+
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot, [], $request);
 
         return \Yii::createObject(Timeslot::class, [
             'request' => $request,
@@ -177,9 +184,11 @@ class QueueApiClient extends BaseApiClient
 
     public function getDropTimeslotRequest(int $timeslotId): Request
     {
-        return $this->prepareRequest($this->urls->timeslots->dropTimeslot, [
-            'timeslot_id' => $timeslotId,
-        ])->setMethod('DELETE');
+        return $this->prepareRequest(
+            $this->urls->timeslots->dropTimeslot,
+            ['timeslot_id' => $timeslotId],
+            $this->makeRequest()->setMethod('DELETE')
+        );
     }
 
     public function getStepSuppliersCheckInnRequest(string $inn): Request
