@@ -3,7 +3,6 @@
 namespace Brezgalov\QueueApiClient;
 
 use Brezgalov\BaseApiClient\BaseApiClient;
-use Brezgalov\BaseApiClient\Exception\RequestFailedException;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
@@ -14,11 +13,9 @@ use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use Brezgalov\QueueApiClient\ResponseAdapters\Timeslot;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotsCollection;
-use Throwable;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Message;
 use yii\httpclient\Request;
-use yii\httpclient\Response;
 
 class QueueApiClient extends BaseApiClient
 {
@@ -47,10 +44,6 @@ class QueueApiClient extends BaseApiClient
      */
     public $activityIdParameterName = 'activity_id';
 
-    private $onPrepareRequestCallbacks = [];
-    private $onSendSucceedCallbacks = [];
-    private $onSendFailedCallbacks = [];
-
     public function __construct($config = [])
     {
         parent::__construct($config);
@@ -75,36 +68,6 @@ class QueueApiClient extends BaseApiClient
     public function setToken(string $value): QueueApiClient
     {
         $this->token = $value;
-
-        return $this;
-    }
-
-    public function addOnPrepareRequestCallback(callable $callback): QueueApiClient
-    {
-        $this->onPrepareRequestCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    public function addOnSendSucceedCallback(callable $callback): QueueApiClient
-    {
-        $this->onSendSucceedCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    public function addOnSendFailedCallback(callable $callback): QueueApiClient
-    {
-        $this->onSendFailedCallbacks[] = $callback;
-
-        return $this;
-    }
-
-    public function clearEvents(): QueueApiClient
-    {
-        $this->onPrepareRequestCallbacks = [];
-        $this->onSendSucceedCallbacks = [];
-        $this->onSendFailedCallbacks = [];
 
         return $this;
     }
@@ -265,20 +228,15 @@ class QueueApiClient extends BaseApiClient
         ]);
     }
 
-    /**
-     * @param string $route
-     * @param array $queryParams
-     * @param Request|null $request
-     * @return Message|Request
-     * @throws InvalidConfigException
-     */
-    public function prepareRequest(string $route, array $queryParams = [], Request $request = null)
+    public function prepareRequest(string $route, array $queryParams = [], Request $request = null): Request
     {
+        if (empty($request)) {
+            $request = $this->makeRequest();
+        }
+
         if ($this->activityId) {
             $queryParams[$this->activityIdParameterName] = $this->activityId;
         }
-
-        $request = parent::prepareRequest($route, $queryParams, $request);
 
         if ($this->token) {
             $request->addHeaders([
@@ -286,46 +244,6 @@ class QueueApiClient extends BaseApiClient
             ]);
         }
 
-        $this->onPrepareRequest($request);
-
-        return $request;
-    }
-
-    protected function onPrepareRequest(Request $request): void
-    {
-        foreach ($this->onPrepareRequestCallbacks as $callback) {
-            call_user_func($callback, $request);
-        }
-    }
-
-    public function sendRequest($request): Response
-    {
-        try {
-            $response = $request->send();
-            $this->onSendSuccess($request, $response);
-
-            return $response;
-
-        } catch (Throwable $ex) {
-
-            $requestFailedException = new RequestFailedException($request, $ex->getCode(), $ex);
-            $this->onSendFailed($requestFailedException);
-
-            throw $requestFailedException;
-        }
-    }
-
-    public function onSendSuccess(Request $request, Response $response): void
-    {
-        foreach ($this->onSendSucceedCallbacks as $callback) {
-            call_user_func($callback, $request, $response);
-        }
-    }
-
-    public function onSendFailed(RequestFailedException $requestFailedException): void
-    {
-        foreach ($this->onSendFailedCallbacks as $callback) {
-            call_user_func($callback, $requestFailedException);
-        }
+        return parent::prepareRequest($route, $queryParams, $request);
     }
 }
