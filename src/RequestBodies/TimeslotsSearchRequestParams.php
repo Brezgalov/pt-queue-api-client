@@ -106,8 +106,15 @@ class TimeslotsSearchRequestParams extends Component implements IRequestParams
      */
     public function getParams()
     {
-        $submitted = $this->submitted ? 1 : 0;
-        $submitted_or_waiting_for_move = $this->submitted_or_waiting_for_move ? 1 : 0;
+        $submitted = null;
+        if (!is_null($this->submitted)) {
+            $submitted = $this->submitted ? 1 : 0;
+        }
+
+        $submitted_or_waiting_for_move = null;
+        if (!is_null($this->submitted_or_waiting_for_move)) {
+            $submitted_or_waiting_for_move = $this->submitted_or_waiting_for_move ? 1 : 0;
+        }
 
         return [
             'id' => $this->id,
