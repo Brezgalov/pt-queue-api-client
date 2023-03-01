@@ -5,10 +5,12 @@ namespace Brezgalov\QueueApiClient;
 use Brezgalov\BaseApiClient\BaseApiClient;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsCreateRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\AutofillsListRequestParams;
+use Brezgalov\QueueApiClient\RequestBodies\CreateMoveTimeRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\CreateTimeRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\StevedoreUnloadsFilter;
 use Brezgalov\QueueApiClient\RequestBodies\SubmitTimeslotRequestBody;
 use Brezgalov\QueueApiClient\RequestBodies\TimeslotsSearchRequestParams;
+use Brezgalov\QueueApiClient\ResponseAdapters\Dto\TimeslotRequestDto;
 use Brezgalov\QueueApiClient\ResponseAdapters\StevedoreUnload;
 use Brezgalov\QueueApiClient\ResponseAdapters\Timeslot;
 use Brezgalov\QueueApiClient\ResponseAdapters\TimeslotRequestsCollection;
@@ -138,6 +140,19 @@ class QueueApiClient extends BaseApiClient
             'request' => $request,
             'response' => $this->sendRequest($request),
         ]);
+    }
+
+    public function createMoveTimeRequest(CreateMoveTimeRequestBody $requestBody): TimeslotRequestDto
+    {
+        $request = $this->makeRequest()
+            ->setMethod('POST')
+            ->setData($requestBody->getBody());
+
+        $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest, [], $request);
+
+        $response = $this->sendRequest($request);
+
+        return new TimeslotRequestDto($response->getData());
     }
 
     public function getAutofillsListRequest(AutofillsListRequestParams $params = null): Request

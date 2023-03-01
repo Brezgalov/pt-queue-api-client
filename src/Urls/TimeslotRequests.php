@@ -19,4 +19,12 @@ class TimeslotRequests extends Component
     {
         return "timeslot-requests/create-time-request";
     }
+
+    /**
+     * @return string
+     */
+    public function getCreateMoveTimeRequest()
+    {
+        return "timeslot-requests/create-move-request";
+    }
 }
