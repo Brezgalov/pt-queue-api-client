@@ -142,17 +142,13 @@ class QueueApiClient extends BaseApiClient
         ]);
     }
 
-    public function createMoveTimeRequest(CreateMoveTimeRequestBody $requestBody): TimeslotRequestDto
+    public function createMoveTimeRequestRequest(CreateMoveTimeRequestBody $requestBody): Request
     {
         $request = $this->makeRequest()
             ->setMethod('POST')
             ->setData($requestBody->getBody());
 
-        $request = $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest, [], $request);
-
-        $response = $this->sendRequest($request);
-
-        return new TimeslotRequestDto($response->getData());
+        return $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest, [], $request);
     }
 
     public function getAutofillsListRequest(AutofillsListRequestParams $params = null): Request
