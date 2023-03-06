@@ -9,6 +9,7 @@ use yii\base\Component;
  * @package Brezgalov\QueueApiClient\Urls
  *
  * @property-read string createTimeRequest
+ * @property-read string createMoveTimeRequest
  */
 class TimeslotRequests extends Component
 {

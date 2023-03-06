@@ -148,7 +148,7 @@ class QueueApiClient extends BaseApiClient
             ->setMethod('POST')
             ->setData($requestBody->getBody());
 
-        return $this->prepareRequest($this->urls->timeslotRequests->createTimeRequest, [], $request);
+        return $this->prepareRequest($this->urls->timeslotRequests->createMoveTimeRequest, [], $request);
     }
 
     public function getAutofillsListRequest(AutofillsListRequestParams $params = null): Request
