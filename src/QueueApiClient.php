@@ -182,6 +182,7 @@ class QueueApiClient extends BaseApiClient
             ->setMethod('POST')
             ->setData([
                 'timeslot_id' => $timeslotId,
+                'submit' => 1,
             ]);
 
         $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot, [], $request);
