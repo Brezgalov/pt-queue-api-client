@@ -176,6 +176,19 @@ class QueueApiClient extends BaseApiClient
         return new Timeslot($request, $this->sendRequest($request));
     }
 
+    public function submitTimeslotMove(int $timeslotId): Timeslot
+    {
+        $request = $this->makeRequest()
+            ->setMethod('POST')
+            ->setData([
+                'timeslot_id' => $timeslotId,
+            ]);
+
+        $request = $this->prepareRequest($this->urls->timeslots->submitTimeslot, [], $request);
+
+        return new Timeslot($request, $this->sendRequest($request));
+    }
+
     public function denyTimeslot(int $timeslotId): Timeslot
     {
         $request = $this->makeRequest()
